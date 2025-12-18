@@ -66,8 +66,8 @@ class Conversation(BaseModel):
     messages: List[Dict[str, Any]]
 
 
-@app.get("/")
-async def root():
+@app.get("/api/health")
+async def health_check():
     """Health check endpoint."""
     return {"status": "ok", "service": "LLM Council API"}
 
@@ -218,6 +218,12 @@ if FRONTEND_DIR.exists():
     # Mount static assets (JS, CSS, images)
     app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
     
+    # Serve index.html at root
+    @app.get("/")
+    async def serve_root():
+        """Serve the SPA index.html at root."""
+        return FileResponse(FRONTEND_DIR / "index.html")
+    
     # Serve index.html for all non-API routes (SPA routing)
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
@@ -228,6 +234,12 @@ if FRONTEND_DIR.exists():
             return FileResponse(file_path)
         # Otherwise serve index.html for SPA routing
         return FileResponse(FRONTEND_DIR / "index.html")
+else:
+    # No frontend built - serve API health check at root
+    @app.get("/")
+    async def root():
+        """Root endpoint when no frontend is built."""
+        return {"status": "ok", "service": "LLM Council API", "frontend": "not built"}
 
 
 if __name__ == "__main__":
