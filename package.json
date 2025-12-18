@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "LLM Council - Multi-model AI aggregation",
   "scripts": {
-    "build": "cd frontend && npm ci && npm run build",
-    "postinstall": "cd frontend && npm ci && npm run build"
+    "build": "cd frontend && npm ci --include=dev && npm run build",
+    "heroku-postbuild": "cd frontend && npm ci --include=dev && npm run build"
   },
   "engines": {
     "node": "20.x"
