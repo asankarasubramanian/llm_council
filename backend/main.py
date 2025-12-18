@@ -210,36 +210,36 @@ async def send_message_stream(conversation_id: str, request: SendMessageRequest)
     )
 
 
-# Serve frontend static files in production
-# This must be added after all API routes
+# Frontend directory path
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend" / "dist"
 
-if FRONTEND_DIR.exists():
-    # Mount static assets (JS, CSS, images)
-    app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
+
+# Serve index.html at root - check at request time
+@app.get("/")
+async def serve_root():
+    """Serve the SPA index.html at root, or API info if no frontend."""
+    index_file = FRONTEND_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    return {"status": "ok", "service": "LLM Council API", "frontend": "not built", "path": str(FRONTEND_DIR)}
+
+
+# Serve static assets and SPA routes - check at request time
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    """Serve static files or SPA index.html for client-side routing."""
+    # Check for static file in dist
+    file_path = FRONTEND_DIR / full_path
+    if file_path.is_file():
+        return FileResponse(file_path)
     
-    # Serve index.html at root
-    @app.get("/")
-    async def serve_root():
-        """Serve the SPA index.html at root."""
-        return FileResponse(FRONTEND_DIR / "index.html")
+    # Check for index.html (SPA fallback)
+    index_file = FRONTEND_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
     
-    # Serve index.html for all non-API routes (SPA routing)
-    @app.get("/{full_path:path}")
-    async def serve_spa(full_path: str):
-        """Serve the SPA for any non-API route."""
-        # Check if it's a static file
-        file_path = FRONTEND_DIR / full_path
-        if file_path.is_file():
-            return FileResponse(file_path)
-        # Otherwise serve index.html for SPA routing
-        return FileResponse(FRONTEND_DIR / "index.html")
-else:
-    # No frontend built - serve API health check at root
-    @app.get("/")
-    async def root():
-        """Root endpoint when no frontend is built."""
-        return {"status": "ok", "service": "LLM Council API", "frontend": "not built"}
+    # No frontend - return 404 for non-API paths
+    raise HTTPException(status_code=404, detail="Not found")
 
 
 if __name__ == "__main__":
