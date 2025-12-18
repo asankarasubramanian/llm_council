@@ -1,0 +1,31 @@
+{
+  "name": "LLM Council",
+  "description": "A multi-LLM council that aggregates responses from multiple AI models",
+  "repository": "https://github.com/yourusername/llm-council",
+  "keywords": ["python", "fastapi", "react", "llm", "ai"],
+  "stack": "heroku-24",
+  "env": {
+    "OPENROUTER_API_KEY": {
+      "description": "Your OpenRouter API key for accessing LLM models",
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "echo 'Deployment complete!'"
+  }
+}
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+# Heroku post-compile hook to build frontend
+
+echo "-----> Building frontend..."
+cd frontend
+npm ci --production=false
+npm run build
+echo "-----> Frontend build complete!"
+
