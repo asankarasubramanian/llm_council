@@ -1,7 +1,7 @@
 {
   "name": "LLM Council",
   "description": "A multi-LLM council that aggregates responses from multiple AI models",
-  "repository": "https://github.com/yourusername/llm-council",
+  "repository": "https://github.com/asankarasubramanian/llm_council",
   "keywords": ["python", "fastapi", "react", "llm", "ai"],
   "stack": "heroku-24",
   "env": {
