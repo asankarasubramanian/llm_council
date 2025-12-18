@@ -1,0 +1,13 @@
+{
+  "name": "llm-council",
+  "version": "1.0.0",
+  "description": "LLM Council - Multi-model AI aggregation",
+  "scripts": {
+    "build": "cd frontend && npm ci && npm run build",
+    "postinstall": "cd frontend && npm ci && npm run build"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
+
